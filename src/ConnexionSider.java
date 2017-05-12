@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.io.*;
 
 public class ConnexionSider {
-	
+	//oui
 	static String DRIVER = "com.mysql.jdbc.Driver";
 	static String HOST = "jdbc:mysql://neptune.telecomnancy.univ-lorraine.fr:3306/";
 	static String DB = "gmd";

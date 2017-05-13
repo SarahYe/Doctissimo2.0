@@ -71,7 +71,7 @@ public class IHM extends JFrame {
 		
 		JTextPane DiseasePane = new JTextPane();
 		//JScrollPane dp = new JScrollPane(DiseasePane);
-		DiseasePane.setBounds(21, 100, 200, 429);
+		DiseasePane.setBounds(37, 100, 200, 429);
 		contentPane.add(DiseasePane);
 		//contentPane.add( dp );
 		
@@ -92,13 +92,6 @@ public class IHM extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				String symptom = EnteredSymptom.getText();
 				Main m = new Main();
-				try {
-					DiseasePane.setText(m.main());
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
 				MedicinePane.setText(symptom);
 				SideEffectPane.setText(symptom);
 			}

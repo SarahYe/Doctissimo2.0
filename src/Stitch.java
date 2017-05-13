@@ -290,7 +290,7 @@ public class Stitch {
 		Query query = MultiFieldQueryParser.parse(entries, fields, obligations, analyzer);
 		
 		//System.out.println("\nSearching for: " + query.toString());
-		int hitsPerPage = 10; //result is ordered with Lucene scored then true
+		int hitsPerPage = 5000;
 		TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
 		
 		try {
@@ -346,7 +346,7 @@ public class Stitch {
 		Query query = MultiFieldQueryParser.parse(entries, fields, obligations, analyzer);
 		
 		//System.out.println("\nSearching for: " + query.toString());
-		int hitsPerPage = 10; //result is ordered with Lucene scored then true
+		int hitsPerPage = 5000;
 		TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
 		
 		try {

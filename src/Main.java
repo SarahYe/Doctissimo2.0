@@ -34,7 +34,7 @@ public class Main {
 	final static File file4 = new File("chemical.sources.v5.0.tsv");
 	static Stitch stitch = new Stitch(file4);
 	
-	Omim omim = new Omim("omim.txt");
+	static Omim omim = new Omim("omim.txt");
 
 
 	public static void main(String[] args) throws SQLException, ParseException {
@@ -231,6 +231,7 @@ public class Main {
 		ArrayList<ArrayList<String>> ListOfDiseaseByHpoSqlLite = new ArrayList<ArrayList<String>>();
 		ArrayList<String> FinalListOfDiseaseByHPOSQLlite = new ArrayList<String>();
 		ArrayList<String> ListOfDiseaseFromOrphaData = new ArrayList<String>();
+		ArrayList<String> ListOfDiseaseFromOmim = new ArrayList<String>();
 		ArrayList<String> ListOfSynonymsFromOnto = new ArrayList<String>();
 		ArrayList<String> ListOfSynonymsFromHPObo = new ArrayList<String>();
 		
@@ -252,32 +253,75 @@ public class Main {
 					//System.out.println("ListDisease: "+ListDisease.size());
 				}
 			}
-			ListOfDiseaseFromOrphaData = orpha.getDiseaseByClinicalSign(symptom);
 			
+			
+			ListOfDiseaseFromOrphaData = orpha.getDiseaseByClinicalSign(symptom);
+			ListOfDiseaseFromOmim = omim.searchIndexWithPhraseQuery(symptom, "Symptom", "Disease");
+			int i = 0;
 			for (String disease: FinalListOfDiseaseByHPOSQLlite){
-				if (ListOfDiseaseFromOrphaData.contains(disease)){
-					System.out.println("Disease from HPO_annotations & OrphaData: " + disease);
-					//FinalListOfDiseaseByHPOSQLlite.remove(disease);
-					//ListOfDiseaseFromOrphaData.remove(disease);
+				disease = disease.toLowerCase();
+				for (String diseaseFromOrpha : ListOfDiseaseFromOrphaData){
+					diseaseFromOrpha.toLowerCase();
+					for (String diseaseFromOmim : ListOfDiseaseFromOmim){
+						diseaseFromOmim.toLowerCase();
+						if ((diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) ||disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))) && (diseaseFromOmim.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOmim.replaceAll(" ","")))){
+							System.out.println("Disease from HPO_annotations, Omim & OrphaData : " + disease); 
+						}
+					}	
+				}
+			}
+		
+			for (String disease: FinalListOfDiseaseByHPOSQLlite){
+				disease = disease.toLowerCase();
+				for (String diseaseFromOmim : ListOfDiseaseFromOmim){
+					diseaseFromOmim = diseaseFromOmim.toLowerCase();
+					if (diseaseFromOmim.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOmim.replaceAll(" ",""))){
+						//System.out.println(disease + "\n" + diseaseFromOmim);
+						System.out.println("Disease from HPO_annotations & OMIM: " + disease);
+					}
 				}
 			}
 			
 			for (String disease: FinalListOfDiseaseByHPOSQLlite){
-				System.out.println("Disease from HPO_annotations: "+ disease);
-				ListOfCuiViaHPO = connexionSider.queryMeddraByName(disease);
-
+				disease = disease.toLowerCase();
+				for (String diseaseFromOrpha: ListOfDiseaseFromOrphaData){
+					diseaseFromOrpha = diseaseFromOrpha.toLowerCase();
+					if (diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))){
+						System.out.println("Disease from HPO_annotations & OrphaData: " + disease);
+					}
+				}
 			}
 			
+			for (String disease: ListOfDiseaseFromOmim){
+				disease = disease.toLowerCase();
+				for (String diseaseFromOrpha: ListOfDiseaseFromOrphaData){
+					diseaseFromOrpha = diseaseFromOrpha.toLowerCase();
+					if (diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))){
+						System.out.println("Disease from OMIM & OrphaData : " + diseaseFromOrpha);
+					}
+				}	
+			}
+			
+			for (String disease: FinalListOfDiseaseByHPOSQLlite){
+				disease = disease.toLowerCase();
+				System.out.println("Disease from HPO_annotations: "+ disease);
+			}
+
+			for (String disease: ListOfDiseaseFromOmim){
+				disease = disease.toLowerCase();
+				System.out.println("\nDisease from OMIM: " + disease);
+			}
 			
 			for (String disease: ListOfDiseaseFromOrphaData){
+				disease = disease.toLowerCase();
 				System.out.println("Disease from OrphaData: " + disease);
 			}
-			
 			
 			
 			/************************************************
 			 * Collect medecine to cure the symptom
 			 ************************************************/
+			//ListOfCuiViaHPO = connexionSider.queryMeddraByName(disease);
 			ListOfCui.addAll(ListOfCuiViaHPO);
 			for (String cui: ListOfCuiViaMeddra){
 				if (ListOfCui.contains(cui) == false)
@@ -322,7 +366,7 @@ public class Main {
 			}
 			
 			
-			System.out.println("There is "+ (FinalListOfDiseaseByHPOSQLlite.size()+ ListOfDiseaseFromOrphaData.size()) + " possible diseases if you have "+ symptom);
+			System.out.println("There is "+ (FinalListOfDiseaseByHPOSQLlite.size()+ ListOfDiseaseFromOrphaData.size() + ListOfDiseaseFromOmim.size()) + " possible diseases if you have "+ symptom);
 			System.out.println("And "+ListOfMedecine.size() + " medicines to cure "+ symptom);
 		} catch (IOException e) {
 			e.printStackTrace();

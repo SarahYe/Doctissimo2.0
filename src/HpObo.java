@@ -212,8 +212,8 @@ public class HpObo {
 	  }
 	
 	/**
-	 * Searching for a symptom
-	 * @param symptom
+	 * 
+	 * @param searchedElement, his field in the indexation & the valueSearched
 	 * @return symptom_id
 	 * @throws IOException 
 	 * @throws ParseException 
@@ -239,7 +239,7 @@ public class HpObo {
 		//Query query			= new QueryParser("Symptom", analyzer).createBooleanQuery("symptom_id", symptom, BooleanClause.Occur.MUST);
 		
 		//System.out.println("\nSearching for: " + query.toString());
-		int hitsPerPage = 10;
+		int hitsPerPage = 5000;
 		TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
 		
 		try {

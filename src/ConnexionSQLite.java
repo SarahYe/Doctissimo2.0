@@ -70,7 +70,7 @@ public class ConnexionSQLite {
 	public ArrayList<String> queryBySymptomId(String symptom_id) throws SQLException {
 				Statement requete = connection.createStatement();
 				ArrayList<String> ListOfDisease = new ArrayList<String>();
-				ResultSet res = requete.executeQuery("SELECT * FROM `phenotype_annotation` WHERE `sign_id`=\"" + symptom_id +'"');
+				ResultSet res = requete.executeQuery("SELECT * FROM 'phenotype_annotation' WHERE `sign_id`=\"" + symptom_id +'"');
 				while (res.next()) {
 					//System.out.println(res.getString("label") + ", symptom_id: " + res.getInt("meddra_id") + ", cui: "+ res.getString("cui"));
 					ListOfDisease.add(res.getString("disease_label"));

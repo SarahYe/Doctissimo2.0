@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.lucene.analysis.Analyzer;
@@ -30,6 +31,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
 import org.apache.lucene.search.TermQuery;
@@ -172,7 +174,7 @@ public class Omim {
 						}
 						
 						symptom = bloc;
-						doc.add(new TextField("Symptom: ", symptom, TextField.Store.YES));
+						doc.add(new TextField("Symptom", symptom, TextField.Store.YES));
 						//System.out.println("Symptom: " + symptom);
 
 					}
@@ -224,8 +226,8 @@ public class Omim {
 			Query query			= new QueryParser(field, analyzer).createBooleanQuery(field, symptom, BooleanClause.Occur.SHOULD);
 
 			
-			System.out.println("\nSearching for: " + query.toString());
-			int hitsPerPage = 10;
+			//System.out.println("\nSearching for: " + query.toString());
+			int hitsPerPage = 5000;
 			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
 			
 			searcher.search(query, collector);
@@ -233,7 +235,7 @@ public class Omim {
 			int numTotalHits = collector.getTotalHits();
 			ScoreDoc[] results = collector.topDocs().scoreDocs;
 			
-			System.out.println("Found "+ numTotalHits + " hits.");
+			//System.out.println("Found "+ numTotalHits + " hits.");
 			for (int i=0; i<results.length;i++){
 				int docId = results[i].doc;
 				Document d = searcher.doc(docId);
@@ -266,9 +268,9 @@ public class Omim {
 			Term term = new Term(field, symptom);
 			Query query = new TermQuery(term);
 			
-			System.out.println("\nSearching for '" + symptom + "' using TermQuery");
+			//System.out.println("\nSearching for '" + symptom + "' using TermQuery");
 
-			int hitsPerPage = 10;
+			int hitsPerPage = 5000;
 			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
 
 			searcher.search(query, collector);
@@ -276,7 +278,7 @@ public class Omim {
 			int numTotalHits = collector.getTotalHits();
 			ScoreDoc[] results = collector.topDocs().scoreDocs;
 			
-			System.out.println("Found "+ numTotalHits + " hits.");
+			//System.out.println("Found "+ numTotalHits + " hits.");
 			for (int i=0; i<results.length;i++){
 				int docId = results[i].doc;
 				Document d = searcher.doc(docId);
@@ -286,6 +288,54 @@ public class Omim {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	/**
+	 * Searching for a disease_name
+	 * @param symptom
+	 * @return disease
+	 * @throws IOException 
+	 * @throws ParseException 
+	 */
+	public ArrayList<String> searchIndexWithPhraseQuery(String symptom, String field, String ValueSearched) throws IOException, ParseException {
+		ArrayList<String> ListOfDisease = new ArrayList<String>();
+		Directory directory = null;
+		IndexReader reader = null;
+		
+		try {
+			directory = FSDirectory.open(INDEX_DIR);
+			reader = DirectoryReader.open(directory);
+			IndexSearcher searcher 	= new IndexSearcher(reader);
+
+			PhraseQuery.Builder builder = new PhraseQuery.Builder();
+			
+			String[] s = symptom.split(" ");
+			for (int i = 0; i<s.length; i++){
+				builder.add(new Term(field, s[i]), i);
+			}
+			PhraseQuery query = builder.build();
+			
+			//System.out.println("\nSearching for '" + symptom + "' using PhraseQuery");
+
+			int hitsPerPage = 5000;
+			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
+
+			searcher.search(query, collector);
+
+			int numTotalHits = collector.getTotalHits();
+			ScoreDoc[] results = collector.topDocs().scoreDocs;
+			
+			//System.out.println("Found "+ numTotalHits + " hits.");
+			for (int i=0; i<results.length;i++){
+				int docId = results[i].doc;
+				Document d = searcher.doc(docId);
+				ListOfDisease.add(d.get(ValueSearched));
+				//System.out.println(d.get(ValueSearched));
+			}
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		return ListOfDisease;
 	}
 }
 

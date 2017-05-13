@@ -12,6 +12,9 @@ import org.apache.lucene.queryparser.classic.ParseException;
 
 public class Main {
 	
+	private static ArrayList<ArrayList<String>> result=new ArrayList<ArrayList<String>>();
+	
+	
 	public Main(){}
 	
 	/************************************************
@@ -34,14 +37,17 @@ public class Main {
 	final static File file4 = new File("chemical.sources.v5.0.tsv");
 	static Stitch stitch = new Stitch(file4);
 	
-	Omim omim = new Omim("omim.txt");
+	static Omim omim = new Omim("omim.txt");
 
 
-	public static void main(String[] args) throws SQLException, ParseException {
+	public static ArrayList<ArrayList<String>> doc(String args) throws SQLException, ParseException {
 
 		/*********************************************************************************************************************************
 		 * CONNECTIONS
 		 *********************************************************************************************************************************/
+		for(int i=0;i<3;i++){
+			result.add(new ArrayList<String>());
+		}
 		
 		try {
 			connexionSQLite.connect();
@@ -178,10 +184,10 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		
 		while (answer =='Y'){
-			System.out.println("\nPlease enter a symptom name: ");
-			String symptom = sc.nextLine();
+			//System.out.println("\nPlease enter a symptom name: ");
+			//String symptom = sc.nextLine();
 			
-			if (symptom.contains("&")){
+			if (args.contains("&")){
 				System.out.println("Conjonction");
 				
 				/*String[] s = symptom.split("&");
@@ -190,12 +196,12 @@ public class Main {
 				}*/
 				
 			}
-			else if (symptom.contains("|")){
+			else if (args.contains("|")){
 				System.out.println("Disjonction");
 				//doctissimo(symptom);
 			}
 			else {
-				doctissimo(symptom);
+				result=doctissimo(args);
 			}
 			
 			
@@ -205,21 +211,27 @@ public class Main {
 			
 			answer = ' ';
 			 
-			while(answer !='Y' && answer != 'N'){
-				System.out.println("Restart ? (Y/N)");
-				answer = sc.nextLine().charAt(0);
-			}
+			//while(answer !='Y' && answer != 'N'){
+				//System.out.println("Restart ? (Y/N)");
+				//answer = sc.nextLine().charAt(0);
+			//}
 		}
 		System.out.println("Hope we help you !");
+		return result;
 	}	
 	
 	
-	public static void doctissimo (String symptom) throws SQLException, ParseException{
+	public static ArrayList<ArrayList<String>> doctissimo (String symptom) throws SQLException, ParseException{
 		/*************************************************************************************************************************************
 		 * 
 		 * Symptom to Disease & Medicine to cure
 		 * 
 		 *************************************************************************************************************************************/
+		
+		ArrayList<ArrayList<String>> results=new ArrayList<ArrayList<String>>();
+		for(int i=0;i<3;i++){
+			results.add(new ArrayList<String>());
+		}
 		
 		ArrayList<String> ListOfCui = new ArrayList<String>();
 		ArrayList<String> ListOfCuiViaMeddra = new ArrayList<String>();
@@ -231,6 +243,7 @@ public class Main {
 		ArrayList<ArrayList<String>> ListOfDiseaseByHpoSqlLite = new ArrayList<ArrayList<String>>();
 		ArrayList<String> FinalListOfDiseaseByHPOSQLlite = new ArrayList<String>();
 		ArrayList<String> ListOfDiseaseFromOrphaData = new ArrayList<String>();
+		ArrayList<String> ListOfDiseaseFromOmim = new ArrayList<String>();
 		ArrayList<String> ListOfSynonymsFromOnto = new ArrayList<String>();
 		ArrayList<String> ListOfSynonymsFromHPObo = new ArrayList<String>();
 		
@@ -252,32 +265,82 @@ public class Main {
 					//System.out.println("ListDisease: "+ListDisease.size());
 				}
 			}
-			ListOfDiseaseFromOrphaData = orpha.getDiseaseByClinicalSign(symptom);
 			
+			
+			ListOfDiseaseFromOrphaData = orpha.getDiseaseByClinicalSign(symptom);
+			ListOfDiseaseFromOmim = omim.searchIndexWithPhraseQuery(symptom, "Symptom", "Disease");
+			int i = 0;
 			for (String disease: FinalListOfDiseaseByHPOSQLlite){
-				if (ListOfDiseaseFromOrphaData.contains(disease)){
-					System.out.println("Disease from HPO_annotations & OrphaData: " + disease);
-					//FinalListOfDiseaseByHPOSQLlite.remove(disease);
-					//ListOfDiseaseFromOrphaData.remove(disease);
+				disease = disease.toLowerCase();
+				for (String diseaseFromOrpha : ListOfDiseaseFromOrphaData){
+					diseaseFromOrpha.toLowerCase();
+					for (String diseaseFromOmim : ListOfDiseaseFromOmim){
+						diseaseFromOmim.toLowerCase();
+						if ((diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) ||disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))) && (diseaseFromOmim.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOmim.replaceAll(" ","")))){
+							results.get(0).add(disease);
+							System.out.println("Disease from HPO_annotations, Omim & OrphaData : " + disease); 
+						}
+					}	
+				}
+			}
+		
+			for (String disease: FinalListOfDiseaseByHPOSQLlite){
+				disease = disease.toLowerCase();
+				for (String diseaseFromOmim : ListOfDiseaseFromOmim){
+					diseaseFromOmim = diseaseFromOmim.toLowerCase();
+					if (diseaseFromOmim.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOmim.replaceAll(" ",""))){
+						//System.out.println(disease + "\n" + diseaseFromOmim);
+						results.get(0).add(disease);
+						System.out.println("Disease from HPO_annotations & OMIM: " + disease);
+					}
 				}
 			}
 			
 			for (String disease: FinalListOfDiseaseByHPOSQLlite){
-				System.out.println("Disease from HPO_annotations: "+ disease);
-				ListOfCuiViaHPO = connexionSider.queryMeddraByName(disease);
-
+				disease = disease.toLowerCase();
+				for (String diseaseFromOrpha: ListOfDiseaseFromOrphaData){
+					diseaseFromOrpha = diseaseFromOrpha.toLowerCase();
+					if (diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))){
+						results.get(0).add(disease);
+						System.out.println("Disease from HPO_annotations & OrphaData: " + disease);
+					}
+				}
 			}
 			
+			for (String disease: ListOfDiseaseFromOmim){
+				disease = disease.toLowerCase();
+				for (String diseaseFromOrpha: ListOfDiseaseFromOrphaData){
+					diseaseFromOrpha = diseaseFromOrpha.toLowerCase();
+					if (diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))){
+						results.get(0).add(disease);
+						System.out.println("Disease from OMIM & OrphaData : " + diseaseFromOrpha);
+					}
+				}	
+			}
+			
+			for (String disease: FinalListOfDiseaseByHPOSQLlite){
+				disease = disease.toLowerCase();
+				results.get(0).add(disease);
+				System.out.println("Disease from HPO_annotations: "+ disease);
+			}
+
+			for (String disease: ListOfDiseaseFromOmim){
+				disease = disease.toLowerCase();
+				results.get(0).add(disease);
+				System.out.println("\nDisease from OMIM: " + disease);
+			}
 			
 			for (String disease: ListOfDiseaseFromOrphaData){
+				disease = disease.toLowerCase();
+				results.get(0).add(disease);
 				System.out.println("Disease from OrphaData: " + disease);
 			}
-			
 			
 			
 			/************************************************
 			 * Collect medecine to cure the symptom
 			 ************************************************/
+			//ListOfCuiViaHPO = connexionSider.queryMeddraByName(disease);
 			ListOfCui.addAll(ListOfCuiViaHPO);
 			for (String cui: ListOfCuiViaMeddra){
 				if (ListOfCui.contains(cui) == false)
@@ -318,11 +381,12 @@ public class Main {
 			}
 			
 			for (String medecine: ListOfMedecine){
+				results.get(1).add(medecine);
 				System.out.println("Medicine: "+medecine);
 			}
 			
 			
-			System.out.println("There is "+ (FinalListOfDiseaseByHPOSQLlite.size()+ ListOfDiseaseFromOrphaData.size()) + " possible diseases if you have "+ symptom);
+			System.out.println("There is "+ (FinalListOfDiseaseByHPOSQLlite.size()+ ListOfDiseaseFromOrphaData.size() + ListOfDiseaseFromOmim.size()) + " possible diseases if you have "+ symptom);
 			System.out.println("And "+ListOfMedecine.size() + " medicines to cure "+ symptom);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -376,11 +440,13 @@ public class Main {
 
 			for (String medecine: ListOfMedecineResponsible){
 				System.out.println("Responsible Medicine: " + medecine);
+				results.get(2).add(medecine);
 			}
 			System.out.println(ListOfMedecineResponsible.size() + " medicines are responsible of " + symptom) ;	
 
 		} else {
 			System.out.println(symptom + " is not a side effect");
 		}
+		return results;
 	}
 }

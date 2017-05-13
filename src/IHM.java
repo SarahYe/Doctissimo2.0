@@ -77,7 +77,7 @@ public class IHM extends JFrame {
 		
 		JTextPane DiseasePane = new JTextPane();
 		//JScrollPane dp = new JScrollPane(DiseasePane);
-		DiseasePane.setBounds(21, 100, 200, 429);
+		DiseasePane.setBounds(37, 100, 200, 429);
 		contentPane.add(DiseasePane);
 		//contentPane.add( dp );
 		
@@ -94,15 +94,23 @@ public class IHM extends JFrame {
 		//contentPane.add( sep );
 		
 		//Button and his action
-		results.get(0).add("oui");
 		JButton btnNewButton = new JButton("Search");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				System.out.println(EnteredSymptom.getText());
 				DiseasePane.setText("");
 				MedicinePane.setText("");
 				SideEffectPane.setText("");
 				
-				//results=Main.doctissimo(Symptom.getText());
+				try {
+					results=Main.doc(EnteredSymptom.getText());
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				String symptom = EnteredSymptom.getText();
 				Main m = new Main();
 				/*try {
@@ -112,14 +120,15 @@ public class IHM extends JFrame {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}*/
+				System.out.println(results.get(0).size());
 				for(int i=0;i<results.get(0).size();i++){
-					DiseasePane.setText(DiseasePane.getText()+"\n"+results.get(0).get(i));
+					DiseasePane.setText(DiseasePane.getText()+"\n"+results.get(0).get(i)+"\n*********************");
 				}
-				for(int i=0;i<results.get(0).size();i++){
-					MedicinePane.setText(MedicinePane.getText()+"\n"+results.get(0).get(i));
+				for(int i=0;i<results.get(1).size();i++){
+					MedicinePane.setText(MedicinePane.getText()+"\n"+results.get(1).get(i)+"\n*********************");
 				}
-				for(int i=0;i<results.get(0).size();i++){
-					SideEffectPane.setText(SideEffectPane.getText()+"\n"+results.get(0).get(i));
+				for(int i=0;i<results.get(2).size();i++){
+					SideEffectPane.setText(SideEffectPane.getText()+"\n"+results.get(2).get(i)+"\n*********************");
 				}
 				/*MedicinePane.setText(symptom);
 				SideEffectPane.setText(symptom);*/

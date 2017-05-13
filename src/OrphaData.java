@@ -76,6 +76,11 @@ public class OrphaData {
 		public ArrayList<String> getDiseaseByClinicalSign(String key) {
 			ArrayList<String> ListOfDisease = new ArrayList<String>();
 			try {
+				key = key.toLowerCase();
+				String first = key.substring(0,1);
+				first = first.toUpperCase();
+				key = key.substring(1, key.length());
+				key = first + key;
 				key = "\""+ key + "\"";
 				key = key.replaceAll(" ", "%20");
 				key = key.replaceAll("\"", "%22");

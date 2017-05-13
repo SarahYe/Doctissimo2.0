@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.ScrollPane;
 import javax.swing.JMenuBar;
@@ -28,6 +29,7 @@ public class IHM extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField EnteredSymptom;
+	private ArrayList<ArrayList<String>> results;
 
 	/**
 	 * Launch the application.
@@ -49,6 +51,10 @@ public class IHM extends JFrame {
 	 * Create the frame.
 	 */
 	public IHM() {
+		results=new ArrayList<ArrayList<String>>();
+		for(int i=0;i<3;i++){
+			results.add(new ArrayList<String>());
+		}
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 600);
 		contentPane = new JPanel();
@@ -87,20 +93,36 @@ public class IHM extends JFrame {
 		contentPane.add(SideEffectPane);
 		//contentPane.add( sep );
 		
+		//Button and his action
+		results.get(0).add("oui");
 		JButton btnNewButton = new JButton("Search");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				DiseasePane.setText("");
+				MedicinePane.setText("");
+				SideEffectPane.setText("");
+				
+				//results=Main.doctissimo(Symptom.getText());
 				String symptom = EnteredSymptom.getText();
 				Main m = new Main();
-				try {
-					DiseasePane.setText(m.main());
+				/*try {
+					//DiseasePane.setText(m.main());
 				} catch (SQLException e) {
 					e.printStackTrace();
 				} catch (ParseException e) {
 					e.printStackTrace();
+				}*/
+				for(int i=0;i<results.get(0).size();i++){
+					DiseasePane.setText(DiseasePane.getText()+"\n"+results.get(0).get(i));
 				}
-				MedicinePane.setText(symptom);
-				SideEffectPane.setText(symptom);
+				for(int i=0;i<results.get(0).size();i++){
+					MedicinePane.setText(MedicinePane.getText()+"\n"+results.get(0).get(i));
+				}
+				for(int i=0;i<results.get(0).size();i++){
+					SideEffectPane.setText(SideEffectPane.getText()+"\n"+results.get(0).get(i));
+				}
+				/*MedicinePane.setText(symptom);
+				SideEffectPane.setText(symptom);*/
 			}
 		});
 		btnNewButton.setBounds(521, 45, 65, 23);
@@ -110,6 +132,7 @@ public class IHM extends JFrame {
 		lblPossibleDiseases.setForeground(new Color(128, 0, 0));
 		lblPossibleDiseases.setFont(new Font("Andalus", Font.ITALIC, 13));
 		lblPossibleDiseases.setBounds(71, 79, 108, 14);
+		
 		contentPane.add(lblPossibleDiseases);
 		
 		JLabel lblMedecinesToCure = new JLabel("Medecines to cure");

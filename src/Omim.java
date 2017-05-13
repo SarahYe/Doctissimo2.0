@@ -54,7 +54,7 @@ public class Omim {
 	public Omim(String file){
 		this.docsPath  =  file;
 	}
-
+ 
 	public void indexation(){
 
 		final Path docDir = Paths.get(docsPath);

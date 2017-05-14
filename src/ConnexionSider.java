@@ -156,7 +156,7 @@ public class ConnexionSider {
 
 	public ArrayList<String> queryMeddraAllIndicationsCID() throws SQLException {
 		Statement requete = con.createStatement();
-		ResultSet res = requete.executeQuery("SELECT stitch_compound_id FROM meddra_all_indications");
+		ResultSet res = requete.executeQuery("SELECT DISTINCT stitch_compound_id FROM meddra_all_indications");
 		ArrayList<String> ListOfAllCID = new ArrayList<String>();
 		while (res.next()) {
 			ListOfAllCID.add(res.getString("stitch_compound_id"));
@@ -242,7 +242,7 @@ public class ConnexionSider {
 	}
 
 	/*******************************************
-	 * Search by CID in meddra_all_indiations
+	 * Search by CID in meddra_all_indications
 	 * @throws SQLException
 	 *******************************************/
 
@@ -271,7 +271,7 @@ public class ConnexionSider {
 	 * @throws ClassNotFoundException 
 	 */
 	public static ArrayList<String> queryMeddraAllCui() throws SQLException, ClassNotFoundException, IOException {
-		connect();
+		//connect();
 		ArrayList<String> result=new ArrayList<String>();
 		Statement requete = con.createStatement();
 		ResultSet res = requete.executeQuery("SELECT * FROM `meddra`");
@@ -281,7 +281,7 @@ public class ConnexionSider {
 		}
 		res.close();
 		requete.close();
-		System.out.println("They are "+result.size()+" different CUI in the Meddra file");
+		//System.out.println("They are "+result.size()+" different CUI in the Meddra file");
 		return result;
 	}
 }

@@ -280,9 +280,6 @@ public class Stitch {
 		}
 		IndexSearcher searcher 	= new IndexSearcher(reader);
 		Analyzer analyzer 	= new StandardAnalyzer();
-		//Query query			= new QueryParser(Chemical, analyzer).parse(CID1);
-		
-		//Query query			= new QueryParser(Chemical, analyzer).createBooleanQuery(Chemical, CID1, BooleanClause.Occur.MUST);
 		
 		String[] fields = {Chemical, Alias};
 		String[] entries = {CID1, CID2};
@@ -336,9 +333,6 @@ public class Stitch {
 		}
 		IndexSearcher searcher 	= new IndexSearcher(reader);
 		Analyzer analyzer 	= new StandardAnalyzer();
-		//Query query			= new QueryParser(Chemical, analyzer).parse(CID1);
-		
-		//Query query			= new QueryParser(Chemical, analyzer).createBooleanQuery(Chemical, CID1, BooleanClause.Occur.MUST);
 		
 		String[] fields = {Chemical, Alias};
 		String[] entries = {CID1, CID1};

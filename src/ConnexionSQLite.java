@@ -96,8 +96,8 @@ public class ConnexionSQLite {
 		}
 	}*/
 	
-	public static ArrayList<String> queryMeddraSymptomID() throws SQLException, ClassNotFoundException, IOException {
-		connect();
+	public static ArrayList<String> querySymptomID() throws SQLException, ClassNotFoundException, IOException {
+		//connect();
 		ArrayList<String> result=new ArrayList<String>();
 		Statement requete = connection.createStatement();
 		ResultSet res = requete.executeQuery("SELECT * FROM 'phenotype_annotation'");
@@ -107,7 +107,7 @@ public class ConnexionSQLite {
 		}
 		res.close();
 		requete.close();
-		System.out.println("They are "+result.size()+" different symptom_id in the hpoSqlite file");
+		//System.out.println("They are "+result.size()+" different symptom_id in the hpoSqlite file");
 		return result;
 	}
 	

@@ -222,11 +222,8 @@ public class Omim {
 			
 			IndexSearcher searcher 	= new IndexSearcher(reader);
 			Analyzer analyzer 	= new StandardAnalyzer();
-			//Query query			= new QueryParser(field, analyzer).parse(symptom);
 			Query query			= new QueryParser(field, analyzer).createBooleanQuery(field, symptom, BooleanClause.Occur.SHOULD);
 
-			
-			//System.out.println("\nSearching for: " + query.toString());
 			int hitsPerPage = 5000;
 			TopScoreDocCollector collector = TopScoreDocCollector.create(hitsPerPage);
 			

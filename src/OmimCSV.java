@@ -23,6 +23,7 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.index.IndexWriterConfig.OpenMode;
 import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -173,8 +174,8 @@ public class OmimCSV {
 		}
 		IndexSearcher searcher 	= new IndexSearcher(reader);
 		Analyzer analyzer 	= new StandardAnalyzer();
-		Query query			= new QueryParser(field, analyzer).parse(cui);
-		//Query query			= new QueryParser("Symptom", analyzer).createBooleanQuery("symptom_id", symptom, BooleanClause.Occur.MUST);
+		//Query query			= new QueryParser(field, analyzer).parse(cui);
+		Query query			= new QueryParser(field, analyzer).createBooleanQuery(field, cui, BooleanClause.Occur.SHOULD);
 
 		//System.out.println("\nSearching for: " + query.toString());
 		int hitsPerPage = 5000;
@@ -218,7 +219,7 @@ public class OmimCSV {
 		}
 		reader.close();
 		fr.close();
-		System.out.println("They are "+result.size()+" different CUI in the file .csv");
+		//System.out.println("They are "+result.size()+" different CUI in the file .csv");
 		return result;
 	}
 }

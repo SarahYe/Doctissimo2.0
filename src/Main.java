@@ -12,9 +12,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 
 public class Main {
 
-	private static ArrayList<ArrayList<String>> result=new ArrayList<ArrayList<String>>();
-
-
+	private static ArrayList<ArrayList<String>> result = new ArrayList<ArrayList<String>>();
 
 	/************************************************
 	 * INITIALIZING THE DATABASES
@@ -342,7 +340,7 @@ public class Main {
 						for (String diseaseFromOmim : ListOfDiseaseFromOmim){
 							diseaseFromOmim.toLowerCase();
 							if ((diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) ||disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))) && (diseaseFromOmim.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOmim.replaceAll(" ","")))){
-								results.get(0).add(disease+" (ORPHADATA,HPO_annotation,OMIM)");
+								results.get(0).add("From HPO_annotations, Omim & OrphaData : "+ disease);
 								System.out.println("Disease from HPO_annotations, Omim & OrphaData : " + disease); 
 							}
 						}	
@@ -355,7 +353,7 @@ public class Main {
 						diseaseFromOmim = diseaseFromOmim.toLowerCase();
 						if (diseaseFromOmim.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOmim.replaceAll(" ",""))){
 							//System.out.println(disease + "\n" + diseaseFromOmim);
-							results.get(0).add(disease+" (Omim,HPO_annotation)");
+							results.get(0).add("From HPO_annotations & OMIM: "+ disease);
 							System.out.println("Disease from HPO_annotations & OMIM: " + disease);
 						}
 					}
@@ -366,7 +364,7 @@ public class Main {
 					for (String diseaseFromOrpha: ListOfDiseaseFromOrphaData){
 						diseaseFromOrpha = diseaseFromOrpha.toLowerCase();
 						if (diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))){
-							results.get(0).add(disease+" (ORPHADATA,HPO_annotation)");
+							results.get(0).add("From HPO_annotations & OrphaData: "+ disease);
 							System.out.println("Disease from HPO_annotations & OrphaData: " + disease);
 						}
 					}
@@ -377,7 +375,7 @@ public class Main {
 					for (String diseaseFromOrpha: ListOfDiseaseFromOrphaData){
 						diseaseFromOrpha = diseaseFromOrpha.toLowerCase();
 						if (diseaseFromOrpha.replaceAll(" ","").contains(disease.replaceAll(" ","")) || disease.replaceAll(" ","").contains(diseaseFromOrpha.replaceAll(" ",""))){
-							results.get(0).add(disease+" (ORPHADATA,OMIM)");
+							results.get(0).add("From OMIM & OrphaData: "+ disease);
 							System.out.println("Disease from OMIM & OrphaData : " + diseaseFromOrpha);
 						}
 					}	
@@ -385,19 +383,19 @@ public class Main {
 
 				for (String disease: FinalListOfDiseaseByHPOSQLlite){
 					disease = disease.toLowerCase();
-					results.get(0).add(disease+" (HPO_annotations)");
+					results.get(0).add("From HPO_annotations: "+disease);
 					System.out.println("Disease from HPO_annotations: "+ disease);
 				}
 
 				for (String disease: ListOfDiseaseFromOmim){
 					disease = disease.toLowerCase();
-					results.get(0).add(disease+" (OMIM)");
+					results.get(0).add("From OMIM: "+ disease);
 					System.out.println("\nDisease from OMIM: " + disease);
 				}
 
 				for (String disease: ListOfDiseaseFromOrphaData){
 					disease = disease.toLowerCase();
-					results.get(0).add(disease+" (OrphaData)");
+					results.get(0).add("From OrphaData: " +disease);
 					System.out.println("Disease from OrphaData: " + disease);
 				}
 

@@ -236,8 +236,8 @@ public class HpObo {
 		}
 		IndexSearcher searcher 	= new IndexSearcher(reader);
 		Analyzer analyzer 	= new StandardAnalyzer();
-		Query query			= new QueryParser(field, analyzer).parse(symptom);
-		//Query query			= new QueryParser("Symptom", analyzer).createBooleanQuery("symptom_id", symptom, BooleanClause.Occur.MUST);
+		//Query query			= new QueryParser(field, analyzer).parse(symptom);
+		Query query			= new QueryParser(field, analyzer).createBooleanQuery(field, symptom, BooleanClause.Occur.SHOULD);
 
 		//System.out.println("\nSearching for: " + query.toString());
 		int hitsPerPage = 5000;
@@ -280,7 +280,7 @@ public class HpObo {
 					result.add(fields[1]);
 			}
 		}
-		System.out.println("They are "+result.size()+" different symptom_id in the hpoOBO file");
+		//System.out.println("They are "+result.size()+" different symptom_id in the hpoOBO file");
 		return result;
 	}
 

@@ -10,15 +10,15 @@ import java.util.ArrayList;
 
 public class ConnexionSQLite {
 	//private String DBPath = "./hpo_annotations.sqlite";
-	private String DBPath = "";
-	private Connection connection = null;
+	private static String DBPath = "hpo_annotations.sqlite";
+	private static Connection connection = null;
 	private Statement statement = null;
 
 	public ConnexionSQLite(String dBPath) {
 		this.DBPath = dBPath;
 	}
 
-	public void connect() throws ClassNotFoundException, IOException{
+	public static void connect() throws ClassNotFoundException, IOException{
 		try {
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection("jdbc:sqlite:" + DBPath);
@@ -95,4 +95,34 @@ public class ConnexionSQLite {
 			e.printStackTrace();
 		}
 	}*/
+	
+	public static ArrayList<String> queryMeddraSymptomID() throws SQLException, ClassNotFoundException, IOException {
+		connect();
+		ArrayList<String> result=new ArrayList<String>();
+		Statement requete = connection.createStatement();
+		ResultSet res = requete.executeQuery("SELECT * FROM 'phenotype_annotation'");
+		while (res.next()) {
+			if(!result.contains(res.getString("sign_id")))
+				result.add(res.getString("sign_id"));
+		}
+		res.close();
+		requete.close();
+		System.out.println("They are "+result.size()+" different symptom_id in the hpoSqlite file");
+		return result;
+	}
+	
+	public static ArrayList<String> queryMeddraDiseaseID() throws SQLException, ClassNotFoundException, IOException {
+		connect();
+		ArrayList<String> result=new ArrayList<String>();
+		Statement requete = connection.createStatement();
+		ResultSet res = requete.executeQuery("SELECT * FROM 'phenotype_annotation'");
+		while (res.next()) {
+			if(!result.contains(res.getString("disease_id")))
+				result.add(res.getString("disease_id"));
+		}
+		res.close();
+		requete.close();
+		System.out.println("They are "+result.size()+" different disease_id in the hpoSqlite file");
+		return result;
+	}
 }

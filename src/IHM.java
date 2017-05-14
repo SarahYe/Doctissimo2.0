@@ -76,22 +76,20 @@ public class IHM extends JFrame {
 		EnteredSymptom.setColumns(10);
 		
 		JTextPane DiseasePane = new JTextPane();
-		//JScrollPane dp = new JScrollPane(DiseasePane);
 		DiseasePane.setBounds(37, 100, 200, 429);
 		contentPane.add(DiseasePane);
-		//contentPane.add( dp );
 		
 		JTextPane MedicinePane = new JTextPane();
-		//JScrollPane mp = new JScrollPane(MedicinePane);
 		MedicinePane.setBounds(242, 100, 200, 429);
 		contentPane.add(MedicinePane);
-		//contentPane.add( mp );
 		
 		JTextPane SideEffectPane = new JTextPane();
 		//JScrollPane sep = new JScrollPane(SideEffectPane);
 		SideEffectPane.setBounds(459, 100, 200, 429);
 		contentPane.add(SideEffectPane);
 		//contentPane.add( sep );
+		
+		
 		
 		//Button and his action
 		JButton btnNewButton = new JButton("Search");
@@ -132,6 +130,7 @@ public class IHM extends JFrame {
 				}
 				/*MedicinePane.setText(symptom);
 				SideEffectPane.setText(symptom);*/
+				System.out.println(results.get(0).get(results.get(0).size()-1));
 			}
 		});
 		btnNewButton.setBounds(521, 45, 65, 23);
